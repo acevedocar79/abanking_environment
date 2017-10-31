@@ -1,0 +1,53 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    volumes:
+      - ./mongo:/docker-entrypoint-initdb.d
+    ports:
+      - 27017:27017
+  rabbitmq:
+    image: rabbitmq:alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  abankingcore:
+    image: abanking_core
+    volumes:
+      - ./core/:/usr/src/app/core/
+    ports:
+      - 8090:8090
+    links:
+      - mongo
+      - redis
+      - rabbitmq
+#  nginx:
+#    image: nginx:alpine
+#    volumes:
+#      - ./nginx/:/etc/nginx/
+#    ports:
+#      - 80:80
+#    environment:
+#      - NGINX_PORT=80
+#    links:
+#      - abankingcore
+  postgres:
+    image: postgres
+    volumes:
+      - ./user_component/postgres:/docker-entrypoint-initdb.d
+      - ./user_component/sql:/tmp
+    ports:
+      - 5432:5432
+  scotiausercomponent:
+    image: scotia_user_component
+    volumes:
+      - ./user_component/config:/usr/src/app/userComponent
+      - ./user_component/lib:/usr/src/app/lib
+    ports:
+      - 8184:8184
+    links:
+      - postgres

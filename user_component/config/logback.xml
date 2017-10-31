@@ -1,0 +1,53 @@
+<configuration>
+    <jmxConfigurator />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="endpointWSScotia" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <param name="file" value="/tmp/endpointScotia.log" />
+        <encoder>
+            <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>/tmp/endpointScotia.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 5 days' worth of history -->
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="endpointWSScotiaSoap" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <param name="file" value="/tmp/endpointScotiaSoap.log" />
+        <encoder>
+            <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>/tmp/endpointScotiaSoap.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 5 days' worth of history -->
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="mx.com.anzen.app.usercomponent.scotia.endpoints" level="info">
+        <appender-ref ref="endpointWSScotia" />
+    </logger>
+    <logger name="mx.com.anzen.app.usercomponent.common" level="info">
+        <appender-ref ref="endpointWSScotia" />
+    </logger>
+    <logger name="mx.com.anzen.app.usercomponent.endpoints" level="info">
+        <appender-ref ref="endpointWSScotia" />
+    </logger>
+
+    <logger name="org.apache.cxf.services" level="info">
+        <appender-ref ref="endpointWSScotiaSoap" />
+    </logger>
+    
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+</configuration>
