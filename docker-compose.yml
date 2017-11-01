@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   mongo:
     image: mongo
@@ -16,7 +16,7 @@ services:
     ports:
       - 6379:6379
   abankingcore:
-    image: abanking_core
+    image: abanking_core.1.0.1
     volumes:
       - ./core/:/usr/src/app/core/
     ports:
@@ -25,25 +25,25 @@ services:
       - mongo
       - redis
       - rabbitmq
-#  nginx:
-#    image: nginx:alpine
-#    volumes:
-#      - ./nginx/:/etc/nginx/
-#    ports:
-#      - 80:80
-#    environment:
-#      - NGINX_PORT=80
-#    links:
-#      - abankingcore
+  #nginx:
+  #  image: nginx:alpine
+  #  volumes:
+  #    - ./nginx/:/etc/nginx/
+  #  ports:
+  #    - 80:80
+  #  environment:
+  #    - NGINX_PORT=80
+  #  links:
+  #    - abankingcore
   postgres:
     image: postgres
     volumes:
       - ./user_component/postgres:/docker-entrypoint-initdb.d
       - ./user_component/sql:/tmp
     ports:
-      - 5432:5432
+      - 5431:5432
   scotiausercomponent:
-    image: scotia_user_component
+    image: scotialeap_user_component
     volumes:
       - ./user_component/config:/usr/src/app/userComponent
       - ./user_component/lib:/usr/src/app/lib
@@ -51,3 +51,26 @@ services:
       - 8184:8184
     links:
       - postgres
+  backoffice_activation_code:
+    image: activation_code_backoffice
+    volumes:
+      - ./backoffice_activation_code:/usr/src/app/backofficeActivationCode
+    ports:
+      - 8089:8089
+    links:
+      - postgres
+  backoffice_admin_rest:
+    image: backoffice_admin_rest_scotia
+    volumes:
+      - ./backoffice_admin_rest:/usr/src/app/backofficeAdminRest
+    ports:
+      - 8186:8186
+    depends_on:
+      - mongo
+      - postgres
+      - rabbitmq
+    links:
+      - mongo
+      - postgres
+      - rabbitmq
+
